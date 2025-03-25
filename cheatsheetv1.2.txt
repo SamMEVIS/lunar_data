@@ -35,7 +35,7 @@ this?
 In lunar_bridge\config\config.lua, find Config.Target. By default, this is set to 
 false. Change it to true to enable the use of a target resource. 
 11 
-1.2.6 How can I use black money as a reward in heists? 
+1.2.6 How can I use black money as a reward in the Heist contracts script? 
 First, navigate to lunar_bridge\config\config.lua and find Config.BlackMoney. 
 Configure your black money item and choose whether it uses metadata. 
 Next, you need to modify the account type for each contract. Locate the respective 
@@ -60,10 +60,11 @@ dependencies are loaded in this sequence:
 1. ox_lib 
 2. Framework 
 3. oxmysql 
-4. lunar_bridge 
-5. lunar_heistcontracts 
-6. lunar_minigames (This should be started after heistcontracts) 
-7. Other dependencies 
+4. (inventory)
+5. lunar_bridge 
+6. lunar_heistcontracts 
+7. lunar_minigames (This should be started after heistcontracts) 
+8. Other dependencies 
 The Heist Contracts script is highly detailed, so I’ve broken the FAQ into multiple 
 sections to make it easier to understand. The structure is as follows: 
 • First, we’ll cover the config.lua. 
@@ -72,201 +73,176 @@ sections to make it easier to understand. The structure is as follows:
 section does not go into specifics about individual contracts but instead covers 
 the general settings and frequently asked questions. 
 2.1 Lunar Heist Contracts Config.lua - FAQ 
-2.1.1 How often are new contracts generated? 
-Contracts are generated every Config.generator.minutesBetweenGeneration 
-minutes. By default, this is set to 2 minutes (recommend not to change due 
-performance). 
-2.1.2 What is the maximum number of contracts that can be generated? 
-The system stops generating new contracts once it reaches Config.generator.max. 
-The default maximum is 16(recommend not to set this higher than 32). 
-2.1.3 How many contracts can a player own at once? 
-A player can hold up to Config.generator.playerLimit contracts. By default, this is 
-set to 2. 
-13 
-2.1.4 How frequently are expired contracts removed? 
-Expired contracts are automatically cleared every 10 minutes, based on 
-Config.generator.clearCron. 
-2.1.5 Can multiple heists run at the same time? 
-Certain heists cannot be started simultaneously. You can define these in 
-Config.limitedHeists. 
-2.1.6 Can I override how cryptocurrency or experience is calculated? 
-Yes, set Config.overrideCrypto or Config.overrideExperience to true and 
-implement custom logic in sv_edit.lua. 
-2.1.7 How can I give admin access to the heist contract system? 
-For ESX, assign admin groups in Config.adminGroups. 
-For QBCore, you need to add the following line to your server.cfg: 
-add_ace group.admin contracts_admin allow   
-2.1.8 Where can players buy heist-related items? 
-Players can purchase items from an NPC defined in Config.ped. Items include 
-hacking tools, explosives, and drills. 
-2.1.9 What currency is used to buy items? 
-The Config.ped.buyAccount setting determines this, defaulting to in-game money. 
-2.1.10 Can players sell items for money or crypto? 
-Yes, items can be sold for cash or cryptocurrency as specified in 
-Config.ped.sellItems. 
-2.1.11 How many players are displayed on the leaderboard? 
-The leaderboard displays the top Config.leaderboard.limit players. The default is 
-10. 
-14 
-2.1.12 How can I translate the script? 
-To translate the script, create a new JSON file in the lunar_heistcontracts\locales\ 
-directory (use the language abbreviation as the filename, e.g., en.json for English). 
-Then, add your translations within that file. 
-2.1.13 I didn’t receive any SQL files, what should I do? 
-This is normal. The SQL files are automatically created and set up when you start the 
-script for the first time 
+2.1.1 How often are new heist contracts generated?
+New heist contracts are generated every Config.generator.minutesBetweenGeneration minutes. By default, this is set to 2 minutes (it is recommended not to change this for performance reasons).
+
+2.1.2 What is the maximum number of heist contracts that can be generated?
+The system stops generating new heist contracts once it reaches Config.generator.max. The default maximum is 16 (it is advised not to set this higher than 32).
+
+2.1.3 How many heist contracts can a player own at once?
+A player can hold up to Config.generator.playerLimit heist contracts. The default limit is 2.
+
+2.1.4 How frequently are expired heist contracts removed?
+Expired heist contracts are automatically cleared every 10 minutes, based on Config.generator.clearCron.
+
+2.1.5 Can multiple heists run at the same time?
+Certain heists cannot be started simultaneously. These can be defined in Config.limitedHeists.
+
+2.1.6 Can I override how cryptocurrency or experience is calculated in heist contracts?
+Yes, you can override these settings by setting Config.overrideCrypto or Config.overrideExperience to true and implementing custom logic in sv_edit.lua.
+
+2.1.7 How can I give admin access to the heist contract system?
+For ESX, assign admin groups in Config.adminGroups. For QBCore, add the following line to your server.cfg: add_ace group.admin contracts_admin allow.
+
+2.1.8 Where can players buy heist-related items?
+Players can purchase heist-related items from an NPC defined in Config.ped. Items include hacking tools, explosives, and drills.
+
+2.1.9 What currency is used to buy heist-related items?
+The Config.ped.buyAccount setting determines the currency, which defaults to in-game money.
+
+2.1.10 Can players sell heist-related items for money or cryptocurrency?
+Yes, players can sell heist-related items for cash or cryptocurrency, as specified in Config.ped.sellItems.
+
+2.1.11 How many players are displayed on the heist leaderboard?
+The leaderboard displays the top Config.leaderboard.limit players. The default setting is 10.
+
+2.1.12 How can I translate the heist contract script?
+To translate the heist contract script, create a new JSON file in the lunar_heistcontracts\locales\ directory. Use the language abbreviation as the filename (e.g., en.json for English). Then, add your translations within that file.
+
+2.1.13 I didn’t receive any SQL files. What should I do?
+This is normal. The SQL files are automatically created and set up when you start the heist contract script for the first time.
 15 
 2.2 Lunar Heist Contracts CL_EDIT  – FAQ 
-2.2.1 How can I adjust the minigames, such as time and quantity? 
-You can modify the minigames in the lunar_heistcontracts\config\cl_edit file. 
-Look for Editable.minigames where you can change settings like time and quantity 
-for each contract and minigame. 
-2.2.2 Can I use other minigames? 
-Yes, you can. In the Editable.minigames section, you can modify the export and 
-associated code to use a different minigame of your choice. 
-2.2.3 Can I use minigames from lunar_minigames in other scripts? 
-Yes, it is possible. You can use the exports from cl_edit Editable.minigames and 
-apply them in other scripts. 
-2.2.4 I’m not getting vehicle keys during a heist. 
-Ensure that your vehiclekey script is integrated into the cl_edit functions 
-Editable.addKeys and Editable.removeKeys. 
-2.2.5 My item icons are not loading. 
-Check the cl_edit function Editable.setInventoryBusy and make sure the path 
-to the images is correct. This issue typically occurs with inventories that are not 
-supported; if that’s the case, it would have been mentioned. 
-16 
+2.2.1 How can I adjust the minigames in heist contracts, such as time and quantity?
+You can modify the minigames used in heist contracts by editing the lunar_heistcontracts\config\cl_edit file. Look for Editable.minigames, where you can adjust settings like time and quantity for each heist contract and its associated minigame.
+
+2.2.2 Can I use other minigames in heist contracts?
+Yes, you can. In the Editable.minigames section, you can modify the export and associated code to use a different minigame of your choice for heist contracts.
+
+2.2.3 Can I use minigames from lunar_minigames in other heist contract scripts?
+Yes, it is possible. You can use the exports from cl_edit Editable.minigames and apply them in other scripts.
+
+2.2.4 I’m not getting vehicle keys during a heist contract mission.
+Ensure that your vehicle key script is integrated into the cl_edit functions Editable.addKeys and Editable.removeKeys for heist contracts.
+
+2.2.5 My item icons are not loading in heist contracts.
+Check the cl_edit function Editable.setInventoryBusy and make sure the path to the images is correct. This issue typically occurs with unsupported inventories for heist contracts; if that’s the case, it would have been mentioned.
 2.3 Lunar Heist Contracts SV_EDIT – FAQ 
 These functions are designed for users who prefer not to use our built-in crypto or 
 experience systems but want to implement their own custom methods. You can add 
 your own exports to the provided functions to manage crypto and experience according 
 to your needs. 
-2.3.1 How can I get a player's crypto balance? 
-Use the function Editable.getPlayerCrypto(identifier) to retrieve the player's crypto 
-balance. This function requires Config.overrideCrypto to be true and is meant for users 
-who wish to manage their own crypto system. Add your custom export to implement 
-your own crypto management. 
-2.3.2 How can I add crypto to a player? 
-Use the function Editable.addPlayerCrypto(identifier, amount) to add crypto. This 
-function requires Config.overrideCrypto to be true and is meant for users who wish to 
-manage their own crypto system. 
-2.3.3 How can I remove crypto from a player? 
-Use the function Editable.removePlayerCrypto(identifier, amount) to remove crypto. 
-Ensure Config.overrideCrypto is set to true for this to work and add your export for 
-custom crypto management. 
-2.3.4 How can I get a player's experience points? 
-Use the function Editable.getPlayerExperience(identifier) to retrieve the player's 
-experience points. This function is intended for users who want to use their own custom 
-experience system instead of the default one. 
-2.3.5 How can I add experience points to a player? 
-Use the function Editable.addPlayerExperience(identifier, amount) to add experience 
-points. This function will work only if Config.overrideExperience is true and is for those 
-implementing their own experience system. 
-2.3.6 How can I remove experience points from a player? 
-Use the function Editable.removePlayerExperience(identifier, amount) to 
-remove experience points. This requires Config.overrideExperience to be true 
-and allows you to implement your own experience management system. 
-17 
+2.3.1 How can I get a player's crypto balance in heist contracts?
+To retrieve a player's crypto balance in heist contracts, use the function Editable.getPlayerCrypto(identifier). This function requires Config.overrideCrypto to be set to true and is intended for users who wish to manage their own crypto system. You can add your own custom export to integrate your preferred crypto management system.
+
+2.3.2 How can I add crypto to a player in heist contracts?
+To add crypto to a player in heist contracts, use the function Editable.addPlayerCrypto(identifier, amount). This requires Config.overrideCrypto to be set to true and is designed for users who want to manage their own crypto system.
+
+2.3.3 How can I remove crypto from a player in heist contracts?
+To remove crypto from a player in heist contracts, use the function Editable.removePlayerCrypto(identifier, amount). Ensure that Config.overrideCrypto is set to true, and add your own export if you are implementing a custom crypto management system.
+
+2.3.4 How can I get a player's experience points in heist contracts?
+To retrieve a player's experience points in heist contracts, use the function Editable.getPlayerExperience(identifier). This function is intended for users who want to integrate their own custom experience system instead of using the default one.
+
+2.3.5 How can I add experience points to a player in heist contracts?
+To add experience points to a player in heist contracts, use the function Editable.addPlayerExperience(identifier, amount). This function requires Config.overrideExperience to be set to true and is meant for those implementing a custom experience system.
+
+2.3.6 How can I remove experience points from a player in heist contracts?
+To remove experience points from a player in heist contracts, use the function Editable.removePlayerExperience(identifier, amount). This requires Config.overrideExperience to be true and allows you to implement your own experience management system.
 2.4 Lunar Heist Contracts General Contract – FAQ 
-2.4.1 How can I disable a heist contract? 
-You can disable a contract by setting the disabled setting to true within the contract 
-configuration. By default, it is set to false. If you set it to true, the contract will be 
-disabled. 
-2.4.2 How do I set the chance of a heist happening? 
-The chance setting determines the likelihood of the heist occurring. It is represented as 
-a percentage, where the value is between 0 and 100. 
-2.4.3 How do I set the price in GCoin for the heist contract? 
-The price setting defines the cost of the heist contract. This is the amount that players 
-need to pay to initiate the contract. 
-2.4.4 How can I require a specific amount of experience to access the heist? 
-The requiredExperience setting specifies the amount of experience a player must 
-have to be eligible for the heist contract. If the player doesn't meet this requirement, 
-they will not be able to participate. 
-2.4.5 How do I set the expiration time for a heist contract? 
-The expiry setting defines how long the heist contract is valid before it expires, 
-measured in minutes. 
-2.4.6 How do I set the time before the heist starts? 
-The timeToStart setting defines the time, in minutes, before the heist officially begins 
-after it is accepted. 
-2.4.7 How do I set the minimum number of players required for the heist? 
-The minMembers setting specifies the minimum number of players required to start the 
-heist. 
-2.4.8 How do I set the maximum number of players for the heist? 
-The maxMembers setting defines the maximum number of players allowed to participate 
-in the heist. This is optional and can be left out if not needed. 
-2.4.9 Can I add other types of rewards to the heist contract? 
-Yes, you can add various types of rewards in the rewards setting, such as crypto, 
-experience, or other items. 
-18 
-2.4.10 How do I set the minimum number of police officers required for the heist? 
-The minPolice setting defines the minimum number of police officers required for the 
-heist to be triggered. 
-2.4.11 How long does the heist last before it resets? 
-The duration setting defines how long the heist lasts before it resets, measured in 
-minutes. 
-2.4.12 How do I set the alarm duration for the heist? 
-The alarmDuration setting specifies how long the alarm will last once the heist is 
-triggered, measured in minutes. 
-2.4.13 How do I configure the blip on the map for the heist? 
-You can customize the blip that shows up on the map by configuring the blip settings, 
-including the name, sprite, size, and color. 
-2.4.14 How do I enable the dispatch for the heist? 
-The dispatch settings allow you to enable or disable dispatch messages for the heist. 
-You can set the code, title, and message for the dispatch notification. 
-2.4.15 How can I use black money as a reward in heists? 
-Check section 1.2.6 for the answer. 
-Here’s the additional FAQ with the new questions and answers: 
-2.4.16 Do I have to use the NoPixel and Gabz maps? 
-No, it is not required to use these maps. However, the script is preconfigured for these 
-maps, meaning if you want to use other maps, you will need to manually adjust the 
-locations in each contract file. 
-19 
-2.4.17 Which maps are preconfigured? 
-• Gabz:  
-o Fleeca Bank 
-o Pacific Bank 
-o Bobcat 
-o Paleto Bank 
-• NoPixel: 
-o Maze Bank 
-o Art Asylum 
-o Cash Exchange 
-o Laundromat 
-For more details, visit: 
-• Gabz: https://fivem.gabzv.com/ 
-• NoPixel: https://store.nopixel.net/category/assets 
-2.4.18 Can I add my own custom contracts? 
-No, custom contracts or existing robberies cannot be added to the script/tablet. 
-2.4.19 My gold bars are added and removed from my inventory, what should I do? 
-This issue is caused by changes to the gold trolley variables. You should revert the 
-variables back due to an animation issue. 
-2.4.20 I see 'ITEM not found' in the black market, what should I do? 
-This issue occurs when the items are not properly added to the inventory or when the 
-inventory is started after the heist contract script. 
-2.4.21 I get an 'UNKNOWN' error when purchasing from the black market, what should I 
-do? 
-This issue happens when the crypto value is set to 0 in the black market. The 
-crypto/gcoin value must be at least 1 for purchases to work. 
-2.4.22 My server crashes due to a loop in the console, how do I fix it? 
-To resolve this, go to lunar_heistcontracts\config\contracts\cargo.lua, find 
-itemCount (which is set to 3 by default), change it to 2, and restart the server. 
-20 
-2.4.23 I’m not receiving dispatch notifications, what should I do? 
-First, check if your dispatch script is supported. If it isn’t, add it to the bridge. If it is 
-supported, ask the customer which contract they are testing. It’s common for the 
-boosting contracts "d" and "c" to be tested, but these have hasTracker = false by 
-default, which results in no dispatch notification being sent. Make sure that 
-hasTracker = true is enabled. 
-21 
+2.4.1 How can I disable a heist contract?
+You can disable a heist contract by setting the disabled setting to true within the contract configuration. By default, it is set to false. If you set it to true, the heist contract will be disabled.
+
+2.4.2 How do I set the chance of a heist happening?
+The chance setting determines the likelihood of the heist contract occurring. It is represented as a percentage, where the value is between 0 and 100.
+
+2.4.3 How do I set the price in GCoin for the heist contract?
+The price setting defines the cost of the heist contract. This is the amount that players need to pay to initiate the heist contract.
+
+2.4.4 How can I require a specific amount of experience to access the heist?
+The requiredExperience setting specifies the amount of experience a player must have to be eligible for the heist contract. If the player doesn't meet this requirement, they will not be able to participate in the heist contract.
+
+2.4.5 How do I set the expiration time for a heist contract?
+The expiry setting defines how long the heist contract is valid before it expires, measured in minutes.
+
+2.4.6 How do I set the time before the heist starts?
+The timeToStart setting defines the time, in minutes, before the heist contract officially begins after it is accepted.
+
+2.4.7 How do I set the minimum number of players required for the heist?
+The minMembers setting specifies the minimum number of players required to start the heist contract.
+
+2.4.8 How do I set the maximum number of players for the heist?
+The maxMembers setting defines the maximum number of players allowed to participate in the heist contract. This is optional and can be left out if not needed.
+
+2.4.9 Can I add other types of rewards to the heist contract?
+Yes, you can add various types of rewards in the rewards setting, such as crypto, experience, or other items for heist contracts.
+
+2.4.10 How do I set the minimum number of police officers required for the heist?
+The minPolice setting defines the minimum number of police officers required for the heist contract to be triggered.
+
+2.4.11 How long does the heist last before it resets?
+The duration setting defines how long the heist contract lasts before it resets, measured in minutes.
+
+2.4.12 How do I set the alarm duration for the heist?
+The alarmDuration setting specifies how long the alarm will last once the heist contract is triggered, measured in minutes.
+
+2.4.13 How do I configure the blip on the map for the heist?
+You can customize the blip that shows up on the map for the heist contract by configuring the blip settings, including the name, sprite, size, and color.
+
+2.4.14 How do I enable the dispatch for the heist?
+The dispatch settings allow you to enable or disable dispatch messages for the heist contract. You can set the code, title, and message for the dispatch notification.
+
+2.4.15 How can I use black money as a reward in heists?
+Check section 1.2.6 for the answer. For heist contracts, black money can be used as a reward.
+
+2.4.16 Do I have to use the NoPixel and Gabz maps for heists?
+No, it is not required to use these maps for heist contracts. However, the script is preconfigured for these maps, meaning if you want to use other maps, you will need to manually adjust the locations in each heist contract file.
+
+2.4.17 Which maps are preconfigured for heists?
+Gabz:
+Fleeca Bank
+Pacific Bank
+Bobcat
+Paleto Bank
+NoPixel:
+Maze Bank
+Art Asylum
+Cash Exchange
+Laundromat
+For more details, visit:
+
+Gabz: https://fivem.gabzv.com/
+NoPixel: https://store.nopixel.net/category/assets
+
+2.4.18 Can I add my own custom contracts to the heist system?
+No, custom contracts or existing robberies cannot be added to the heist contract script/tablet.
+
+2.4.19 My gold bars are added and removed from my inventory, what should I do?
+This issue is caused by changes to the gold trolley variables. You should revert the variables back due to an animation issue in the heist contract.
+
+2.4.20 I see 'ITEM not found' in the black market, what should I do?
+This issue occurs when the items are not properly added to the inventory or when the inventory is started after the heist contract script.
+
+2.4.21 I get an 'UNKNOWN' error when purchasing from the black market, what should I do?
+This issue happens when the crypto value is set to 0 in the black market. The crypto/gcoin value must be at least 1 for purchases to work in heist contracts.
+
+2.4.22 My server crashes due to a loop in the console, how do I fix it?
+To resolve this, go to lunar_heistcontracts\config\contracts\cargo.lua, find itemCount (which is set to 3 by default), change it to 2, and restart the server.
+
+2.4.23 I’m not receiving dispatch notifications for heists, what should I do?
+First, check if your dispatch script is supported. If it isn’t, add it to the bridge. If it is supported, ask the customer which heist contract they are testing. It’s common for the boosting contracts "d" and "c" to be tested, but these have hasTracker = false by default, which results in no dispatch notification being sent. Make sure that hasTracker = true is enabled.
+
 3. Lunar_jobscreator  
 General Information about Jobscreator 
 To successfully start Jobscreator in the correct order, ensure the following 
 dependencies are loaded in this sequence: 
 1. ox_lib 
 2. Framework 
-3. oxmysql 
-4. lunar_bridge 
-5. lunar_jobscreator 
-6. Other dependencies may be required depending on your setup. 
+3. (inventory)
+4. oxmysql 
+5. lunar_bridge 
+6. lunar_jobscreator 
+7. Other dependencies may be required depending on your setup. 
 The Jobscreator script is highly detailed, so I’ve broken the FAQ into multiple sections 
 to make it easier to understand. The structure is as follows: 
 • First, we’ll cover the config.lua. 
@@ -277,398 +253,355 @@ will not go into specifics about individual jobs but will instead cover the gene
 settings and frequently asked questions. 
 22 
 3.1 Lunar Jobscreator  Config.lua - FAQ 
-3.1.1 How do I open the Jobscreator? 
-After a successful installation, you should be able to open it by using the /jobscreator 
-command. 
-3.1.2 /jobscreator command doesn’t exist, what should I do? 
-If the /jobscreator command doesn’t exist, it is possible that the file has become 
-corrupted. If the customer is using FileZilla, advise them to upload the script using a 
-program like WinSCP, then try again. 
-3.1.3 I’m typing /jobscreator, but nothing happens or I get a permission error, what 
-should I do? 
-This happens if you haven’t added add_ace group.admin jobscreator_admin 
-allow to the server.cfg. Make sure this line is included to grant the necessary 
-permissions. 
-3.1.4 How do I translate the Jobscreator? 
-To translate the Jobscreator, you need to create a language file (e.g., en.json) in two 
-locations: 
-1. lunar_jobscreator\locales 
-2. lunar_jobscreator\web\dist\locales 
-3.1.5 Can I add multiple account types, such as society or black_money? 
-Yes, if these account types are registered in your framework, you can add them to 
-Config.accounts. By default, only money and bank are available. 
-3.1.6 Can I use an actions menu for all interactions? 
-Yes, go to the config.lua file and look for Config.actionsMenu. By default, it is set 
-to true. If you want to disable it, set it to false. 
-3.1.7 Can I use a radial menu for all interactions? 
-Yes, go to the config.lua file and look for Config.radialMenu. By default, it is set to 
-false. If you want to enable the radial menu, set it to true. 
-3.1.8 Can I disable target interactions? 
-Yes, go to the config.lua file and look for Config.disableTargetInteractions. 
-Set it to true to disable interactions through your target resource. 
-23 
-3.1.9 I didn’t receive any SQL files, what should I do? 
-This is normal. The SQL files are automatically created and set up when you start the 
-script for the first time. 
-3.1.10 I get a "Refreshjobs" error and my jobs aren’t saving, what should I do? 
-This issue occurs due to an outdated ESX version, as it lacks the Refreshjobs 
-function. Update to a more recent version of ESX to resolve the issue. 
-3.1.11 I get the esx_society warning "attempted to open menu" (usually with a long ID in 
-the name), what should I do? 
-To resolve this, the customer must add esx_society as a dependency on line 15 of the 
-fxmanifest.lua for the Jobscreator. Additionally, the job must be recreated entirely; 
-duplicates will not work in this case. 
-3.1.12 /convertjobs isn’t working, how do I convert my existing jobs to the Jobscreator? 
-The /convertjobs command is designed to convert jobs from the Lunar Unijob (v1) or 
-Jobscreator's previous version to the current one. Unfortunately, you cannot convert 
-your existing jobs directly to the Jobscreator. You will need to recreate the jobs 
-manually in the new format. 
+3.1.1 How do I open the Jobscreator?
+After a successful installation, you should be able to open the Jobscreator by using the /jobscreator command.
+
+3.1.2 /jobscreator command doesn’t exist, what should I do?
+If the /jobscreator command doesn’t exist, it is possible that the file has become corrupted. If the customer is using FileZilla, advise them to upload the script using a program like WinSCP, then try again.
+
+3.1.3 I’m typing /jobscreator, but nothing happens or I get a permission error, what should I do?
+This happens if you haven’t added add_ace group.admin jobscreator_admin allow to the server.cfg. Make sure this line is included to grant the necessary permissions for Jobscreator.
+
+3.1.4 How do I translate the Jobscreator?
+To translate the Jobscreator, you need to create a language file (e.g., en.json) in two locations:
+
+lunar_jobscreator\locales
+
+lunar_jobscreator\web\dist\locales
+
+3.1.5 Can I add multiple account types, such as society or black_money?
+Yes, if these account types are registered in your framework, you can add them to Config.accounts. By default, only money and bank are available in the Jobscreator configuration.
+
+3.1.6 Can I use an actions menu for all interactions?
+Yes, go to the config.lua file and look for Config.actionsMenu. By default, it is set to true. If you want to disable it, set it to false.
+
+3.1.7 Can I use a radial menu for all interactions?
+Yes, go to the config.lua file and look for Config.radialMenu. By default, it is set to false. If you want to enable the radial menu, set it to true.
+
+3.1.8 Can I disable target interactions?
+Yes, go to the config.lua file and look for Config.disableTargetInteractions. Set it to true to disable interactions through your target resource in the Jobscreator.
+
+3.1.9 I didn’t receive any SQL files, what should I do?
+This is normal. The SQL files for Jobscreator are automatically created and set up when you start the script for the first time.
+
+3.1.10 I get a "Refreshjobs" error and my jobs aren’t saving, what should I do?
+This issue occurs due to an outdated ESX version, as it lacks the Refreshjobs function. Update to a more recent version of ESX to resolve the issue and ensure jobs are properly saved in Jobscreator.
+
+3.1.11 I get the esx_society warning "attempted to open menu" (usually with a long ID in the name), what should I do?
+To resolve this, the customer must add esx_society as a dependency on line 15 of the fxmanifest.lua for the Jobscreator. Additionally, the job must be recreated entirely; duplicates will not work in this case.
+
+3.1.12 /convertjobs isn’t working, how do I convert my existing jobs to the Jobscreator?
+The /convertjobs command is designed to convert jobs from the Lunar Unijob (v1) or Jobscreator's previous version to the current one. Unfortunately, you cannot convert your existing jobs directly to the Jobscreator. You will need to recreate the jobs manually in the new format.
 24 
 3.2 Lunar JobsCreator CL_EDIT  – FAQ 
-3.2.1 I get the warning 'No script for clothing found! Supported: fivem
-appearance/illenium-appearance/qb-clothing.' What should I do? 
-Go to lunar_jobscreator\config\cl_edit and locate the function 
-Editable.openCloakroom. Add your clothing resource here so the cloakroom will 
-function properly. 
-3.2.2 I don’t receive keys when taking a vehicle from the garage. What should I do? 
-Go to lunar_jobscreator\config\cl_edit and locate the functions 
-Editable.onVehicleSpawned and Editable.onVehicleSaved. Configure these 
-functions to give a key when a vehicle is spawned and remove it when stored. 
-3.2.3 My stash doesn’t work, or I get the error 'Your inventory script doesn’t support 
-stashes.' What should I do? 
-Go to lunar_jobscreator\config\cl_edit and locate the function 
-Editable.openStash. Add the correct exports for your inventory system—missing 
-exports are likely causing the issue. If you are using QB Inventory, contact Sam for 
-assistance. 
-3.2.4 My shop doesn’t work, or I get the error 'Configure cl_edit.lua shops for your 
-inventory.' What should I do? 
-Go to lunar_jobscreator\config\cl_edit and locate the function 
-Editable.openShop. Add the correct shop exports from your inventory script to the 
-Jobscreator. 
-3.2.5 I want to set specific conditions for interactions, such as preventing handcuffing 
-when a player is dead. How do I do this? 
-Go to Editable.canInteractFilter in lunar_jobscreator\config\cl_edit and 
-add the required conditions. You can configure different interaction restrictions based 
-on various factors. 
-3.2.6 I try to search a player, but nothing happens. What should I do? 
-Check the function Editable.searchPlayer in 
-lunar_jobscreator\config\cl_edit and ensure the exports match your inventory 
-script. 
-25 
+3.2.1 I get the warning 'No script for clothing found! Supported: fivem appearance/illenium-appearance/qb-clothing.' What should I do?
+Go to lunar_jobscreator\config\cl_edit and locate the function Editable.openCloakroom. Add your clothing resource here so the cloakroom will function properly.
+
+3.2.2 I don’t receive keys when taking a vehicle from the garage. What should I do?
+Go to lunar_jobscreator\config\cl_edit and locate the functions Editable.onVehicleSpawned and Editable.onVehicleSaved. Configure these functions to give a key when a vehicle is spawned and remove it when stored.
+
+3.2.3 My stash doesn’t work, or I get the error 'Your inventory script doesn’t support stashes.' What should I do?
+Go to lunar_jobscreator\config\cl_edit and locate the function Editable.openStash. Add the correct exports for your inventory system—missing exports are likely causing the issue. If you are using QB Inventory, contact Sam for assistance.
+
+3.2.4 My shop doesn’t work, or I get the error 'Configure cl_edit.lua shops for your inventory.' What should I do?
+Go to lunar_jobscreator\config\cl_edit and locate the function Editable.openShop. Add the correct shop exports from your inventory script to the Jobscreator.
+
+3.2.5 I want to set specific conditions for interactions, such as preventing handcuffing when a player is dead. How do I do this?
+Go to Editable.canInteractFilter in lunar_jobscreator\config\cl_edit and add the required conditions. You can configure different interaction restrictions based on various factors.
+
+3.2.6 I try to search a player, but nothing happens. What should I do?
+Check the function Editable.searchPlayer in lunar_jobscreator\config\cl_edit and ensure the exports match your inventory script.
    
  
   26 
  
-3.2.7 I try to open the boss menu, but nothing happens. What should I do? 
-The Jobscreator itself does not include a boss menu but instead triggers an external 
-boss menu script. Go to Editable.openBossMenu and ensure your boss menu script 
-is installed and correctly configured. If you use a custom boss menu, add it to the 
-function Editable.openBossMenu. 
-3.2.8 I get an error when trying to open the boss menu, but I use QBX Management. What 
-should I do? 
-Remove the following code from the function Editable.openBossMenu: 
-elseif isStarted('esx_society') then 
-    Framework.object.UI.Menu.CloseAll() 
-    TriggerEvent('esx_society:openBossMenu', job.name, 
-function(data, menu) 
-        if menu then 
-            menu.close() 
-        end 
-    end, { 
-        wash = job.canWash, 
-        grades = false, 
-        salary = false 
-    }) 
-  
-Restart the server, and it should now work. 
-3.2.9 I get the warning: 'Inventory images path not set in cl_edit.lua!' What should I do? 
-Check Editable.getInventoryIcon in lunar_jobscreator\config\cl_edit and 
-ensure your inventory script is listed. If not, add the correct path to your inventory 
-images. 
-3.2.10 How do I change the keybind for tackling or the interaction menu? 
-Go to Binds.interact & Binds.actionsMenu in 
-lunar_jobscreator\config\cl_edit. Here, you can modify the keybind settings. 
+3.2.7 I try to open the boss menu in JobsCreator, but nothing happens. What should I do?
+The JobsCreator itself does not include a boss menu but instead triggers an external boss menu script. Go to Editable.openBossMenu and ensure your boss menu script is installed and correctly configured. If you use a custom boss menu, add it to the function Editable.openBossMenu.
+
+3.2.8 I get an error when trying to open the boss menu in JobsCreator, but I use QBX Management. What should I do?
+Remove the following code from the function Editable.openBossMenu:
+elseif isStarted('esx_society') then
+Framework.object.UI.Menu.CloseAll()
+TriggerEvent('esx_society:openBossMenu', job.name,
+function(data, menu)
+if menu then
+menu.close()
+end
+end, {
+wash = job.canWash,
+grades = false,
+salary = false
+})
+Restart the server, and it should now work.
+
+3.2.9 I get the warning: 'Inventory images path not set in cl_edit.lua for JobsCreator!' What should I do?
+Check Editable.getInventoryIcon in lunar_jobscreator\config\cl_edit and ensure your inventory script is listed. If not, add the correct path to your inventory images for JobsCreator.
+
+3.2.10 How do I change the keybind for tackling or the interaction menu in JobsCreator?
+Go to Binds.interact & Binds.actionsMenu in lunar_jobscreator\config\cl_edit. Here, you can modify the keybind settings for JobsCreator.
  
  
  
 3.3 Lunar Jobscreator SV_EDIT – FAQ 
-3.3.1 How can I add my own banking/society system to the Jobscreator? 
-Go to lunar_jobscreator\config\sv_edit and locate the functions: 
-• Editable.getSocietyMoney 
-• Editable.addSocietyMoney 
-Modify these functions to integrate your custom banking or society system. 
-3.3.2 I use QBox and Renewed Banking, but I get a sv_edit warning that my banking script 
-cannot be fetched. 
-This is expected because the exports do not work for QBox. You may need to manually 
-integrate QBox banking functions into the script. 
-3.3.3 I want to integrate my own garage script. Where can I do this? 
-Technically, you can modify the functions: 
-• Editable.getVehicles 
-• Editable.saveVehicle 
-However, it is not recommended to change these functions because the included 
-garage system works differently. The built-in garage is specifically for work vehicles. In 
-most cases, it’s easier to manually add a garage entry to your existing garage system 
-instead of modifying these functions. 
-3.3.4 I can't park my personal vehicle in the garage. Why not? 
-This is expected behavior. The Jobscreator garage only supports vehicles purchased in 
-the jobs vehicle shop. It is not meant for personal vehicles. 
-27 
-3.3.5 My webhooks are not saving. What should I do? 
-Go to sv_edit.lua and search for the database creation query related to webhooks. 
-Replace the existing create table statement with the following SQL snippet: 
-CREATE TABLE IF NOT EXISTS lunar_jobscreator_webhooks ( 
-name varchar(50) NOT NULL, 
-url varchar(1000) NOT NULL, 
-PRIMARY KEY (name) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
-Restart your server, and the webhooks should now save correctly. 
-3.3.6 I use Lunar Jobscreator and Lunar Multijob, but money paid into the cash register 
-doesn’t go to the correct society. 
-Replace the entire addSocietyMoney function in sv_edit.lua with the following 
-snippet: ---@param society string ---@param amount integer 
-function Editable.addSocietyMoney(society, amount) 
-exports['lunar_multijob']:addAccountBalance(society, amount) 
-end 
-This ensures that payments go to the correct society account when using Lunar 
-Multijob. 
+3.3.1 How can I add my own banking/society system to the JobsCreator?
+Go to lunar_jobscreator\config\sv_edit and locate the functions:
+• Editable.getSocietyMoney
+• Editable.addSocietyMoney
+Modify these functions to integrate your custom banking or society system into JobsCreator.
+
+3.3.2 I use QBox and Renewed Banking, but I get a sv_edit warning that my banking script cannot be fetched in JobsCreator.
+This is expected because the exports do not work for QBox. You may need to manually integrate QBox banking functions into the JobsCreator script.
+
+3.3.3 I want to integrate my own garage script into JobsCreator. Where can I do this?
+Technically, you can modify the functions:
+• Editable.getVehicles
+• Editable.saveVehicle
+However, it is not recommended to change these functions because the included garage system works differently. The built-in garage is specifically for work vehicles. In most cases, it’s easier to manually add a garage entry to your existing garage system instead of modifying these functions within JobsCreator.
+
+3.3.4 I can't park my personal vehicle in the garage in JobsCreator. Why not?
+This is expected behavior. The JobsCreator garage only supports vehicles purchased in the jobs vehicle shop. It is not meant for personal vehicles.
+
+3.3.5 My webhooks are not saving in JobsCreator. What should I do?
+Go to sv_edit.lua and search for the database creation query related to webhooks. Replace the existing create table statement with the following SQL snippet:
+CREATE TABLE IF NOT EXISTS lunar_jobscreator_webhooks (
+name varchar(50) NOT NULL,
+url varchar(1000) NOT NULL,
+PRIMARY KEY (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+Restart your server, and the webhooks should now save correctly in JobsCreator.
+
+3.3.6 I use Lunar JobsCreator and Lunar Multijob, but money paid into the cash register doesn’t go to the correct society in JobsCreator.
+Replace the entire addSocietyMoney function in sv_edit.lua with the following snippet:
+---@param society string
+---@param amount integer
+function Editable.addSocietyMoney(society, amount)
+exports['lunar_multijob']:addAccountBalance(society, amount)
+end
+This ensures that payments go to the correct society account when using Lunar Multijob with JobsCreator.
 28 
+
 3.4 Lunar Jobscreator General Job – FAQ 
 3.4.1.1 General Settings 
-3.4.1.1.1 Can I adjust the interaction radius? 
-Yes, go to the settings in your jobscreator and adjust the "Interact Distance" setting. 
-3.4.1.1.2 Can I change the handcuff or zip tie item to a different one? 
-Yes, go to the settings and under the "Handcuff items" section, you can change the 
-item. 
-3.4.1.1.3 Can I choose not to use a handcuff item? 
-Yes, go to the settings in your jobscreator and under the "Handcuff items" section, you 
-can enable or disable the use of handcuff items. 
-3.4.1.1.4 Can I disable the handcuff skill check? 
-Yes, go to the settings in your jobscreator, and under the "Handcuff items" section, you 
-will find the "Handcuffs Skill Check" option. You can uncheck it to disable the skill 
-check. 
-3.4.1.1.5 Why can’t I run when someone is handcuffed? 
-Go to the settings in your jobscreator and under the "Handcuff items" section, you’ll 
-find the "Sprint while dragging" option. By default, this is turned off. If you want to run 
-while dragging a handcuffed person, enable this option. 
-3.4.1.1.6 Can I set up Global Player Interactions so everyone can use them? 
-Yes, go to the settings in your jobscreator and under the "Global Player Actions" 
-section, you can check which actions should be global for everyone. 
-3.4.1.1.7 Can I set up Global Vehicle Interactions so everyone can use them? 
-Yes, go to the settings in your jobscreator and under the "Global Vehicle Actions" 
-section, you can check which actions should be global for everyone. 
-3.4.1.1.8 Can I modify the duration of certain actions? 
-Yes, go to the settings in your jobscreator and under the "Action Durations" section, you 
-can adjust the duration for some actions (Note: the time is in milliseconds). 
-29 
-3.4.1.1.9 Can I set up a global webhook for administrative purposes? 
-Yes, go to the Webhooks section in your jobscreator. Here, you can create and 
-configure a webhook that tracks all jobs. 
-3.4.1.1.10 Can I set up a job-specific webhook for administrative purposes? 
-Yes, go to the Jobs section and click on "Edit." Then, navigate to the "General" tab and, 
-at the bottom, you can add a webhook for that specific job. 
-3.4.1.1.11 Can I set up global points like a Store or Spawner Zone that everyone has 
-access to regardless of the player job? 
-No, this is not possible. All set-up points are linked to a job. 
-3.4.1.1.12 Can I set up an on/off duty point with the jobscreator? 
-No, this is not a feature of the script. 
-30 
-3.4.2.1 Jobs Grades 
-3.4.2.1.1 How can I change the salary of a specific job rank? 
-Click the three dots on the right and select "Edit." Here, you can modify the salary for 
-the job rank. 
-3.4.2.1.2 How can I grant Boss actions to a rank? 
-Click the three dots on the right or during rank creation, check the "Boss Actions 
-Access" box to grant Boss actions to the rank. 
-3.4.3.1 Actions 
-3.4.3.1.1 How can I add job-specific player actions? 
-Go to the job and look for the "Actions" section. Here, you can enable or disable the 
-available actions for the job. 
-3.4.3.1.2 How can I add job-specific vehicle actions? 
-Go to the job and look for the "Actions" section. Here, you can enable or disable the 
-available vehicle actions for the job. 
-3.4.3.1.3 Can I modify the duration of these specific actions? 
-Yes, go to the settings in your jobscreator and under the "Action Durations" section, you 
-can adjust the duration for some actions (Note: the time is in milliseconds). 
-31 
-3.4.4.1 Blips 
-3.4.4.1.1 How can I create a blip that everyone can see? 
-When creating a blip, check the "Global" box to make it visible to everyone. 
-3.4.4.1.2 Where can I find the values for the Sprite and Color? 
-A helpful website for this is https://docs.fivem.net/docs/game-references/blips/. 
-3.4.5.1 Boss Menu 
-3.4.5.1.1 I try to open the boss menu, but nothing happens. What should I do? 
-The Jobscreator itself does not include a boss menu, but it triggers an external boss 
-menu script. Go to Editable.openBossMenu and ensure your boss menu script is 
-installed and correctly configured. If you are using a custom boss menu, add it to the 
-Editable.openBossMenu function. 
-3.4.6.1 Cloakroom 
-3.4.6.1.1 I get the warning 'No script for clothing found! Supported: fivem
-appearance/illenium-appearance/qb-clothing.' What should I do? 
-Go to lunar_jobscreator\config\cl_edit and locate the function 
-Editable.openCloakroom. Add your clothing resource here so the cloakroom will 
-function properly. 
-32 
-3.4.7.1 Collecting Zones 
-3.4.7.1.1 How can I set up that a required item is needed before I can collect? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the "Required Item" section, where you can set the required item. 
-3.4.7.1.2 Can I set up multiple required items? 
-No, you can only set one required item at a time. 
-3.4.7.1.3 How can I remove a required item? 
-Simply leave the "Required Item" field empty to prevent requiring an item. 
-3.4.7.1.4 How can I adjust the duration of the collecting process? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the "Duration" section, where you can adjust the duration in 
-milliseconds. 
-3.4.7.1.5 How can I set a Max Collectable limit? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Find the "Max Collectable" section and enter the maximum value you want. 
-3.4.7.1.6 How can I adjust the recovery time between collections? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the "Recovery Time" section, where you can set the time (in milliseconds) 
-until a collecting point can be used again. 
-3.4.7.1.7 How can I set it up to get a different amount of items each time? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the second section named "Items" and adjust the "Min" and "Max" count 
-for the items. 
-3.4.7.1.8 How can I assign a custom scenario/animation for collecting? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the "Animation" section, where you can select a scenario/animation 
-type. 
-33 
-3.4.7.1.9 How can I set up a location for collecting? 
-Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting 
-zone. Look for the "Locations" section, where you can add the vec3 coordinates for the 
-collecting point. 
-34 
-3.4.8.1 Spawner Zones 
-3.4.8.1.1 How can I set up that a required item is needed before I can collect? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the "Required Item" section, where you can set the required item. 
-3.4.8.1.2 Can I set up multiple required items? 
-No, you can only set one required item at a time. 
-3.4.8.1.3 How can I remove a required item? 
-Simply leave the "Required Item" field empty to prevent requiring an item. 
-3.4.8.1.4 How can I adjust the duration of the collecting process? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the "Duration" section, where you can adjust the duration in milliseconds. 
-3.4.8.1.6 How can I adjust the recovery time between spawns? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the "Recovery Time" section, where you can set the time (in milliseconds) until 
-a spawner zone can be used again. 
-3.4.8.1.7 How can I set it up to get a different amount of items each time? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the second section named "Items" and adjust the "Min" and "Max" count for 
-the items. 
-3.4.8.1.8 How can I assign a custom scenario/animation for collecting? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the "Animation" section, where you can select a scenario/animation type. 
-3.4.8.1.9 How can I set up a location for collecting? 
-Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. 
-Look for the "Locations" section, where you can add the vec3 coordinates for the 
-spawner point. 
-35 
-3.4.8.1.10 How can I adjust the radius of the spawn zone? 
-Go to the "Spawner zone" tab, click "Add spawner zone," or edit an existing spawner 
-zone. Look for the "Locations" section, where you can change the radius in meters. 
-36 
-3.4.9.1 Crafting 
-3.4.9.1.1 Can I connect a crafting table to a minimum job grade? 
-Yes, go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. 
-Look for the "Basic" section and then the "Grade" setting, where you can define a 
-minimum grade requirement. 
-3.4.9.1.2 How can I configure recipes for crafting? 
-Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look 
-for the "Recipes" section and click on the first action on the right. Here, you can 
-configure the requirements for creating the set blueprint and define which item you will 
-get in return after crafting. 
-3.4.9.1.3 How can I set up a location for crafting? 
-Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look 
-for the "Locations" section, where you can add the vec3 coordinates for the crafting 
-point. 
-3.4.9.1.4 How can I assign a custom scenario/animation for crafting? 
-Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look 
-for the "Animation" section, where you can select a scenario/animation type. 
-3.4.10.1 Garages 
-3.4.10.1.1 How can I change the vehicle type for a garage? 
-Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the 
-"Vehicle type" section, where you can set the type, such as "Air" or "Car." 
-3.4.10.1.2 How can I make a garage shared? 
-Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the 
-"Shared" section and check the box to make the vehicles shared between employees. 
-3.4.10.1.3 I want to use the spawn name, but the vehicle doesn't spawn. What should I 
-do? 
-This issue occurs because you should not use the vehicle's name; instead, use the 
-vehicle's hash. 
-37 
-3.4.10.1.4 How can I make a vehicle spawn with specific customizations? 
-Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the 
-"Vehicles" section, and on the right side, select the first option. Here, you can add 
-vehicle customizations. 
-3.4.10.1.5 How can I set up a new garage? 
-Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the 
-"Locations" section and enter where you want the garage to be accessible. In the 
-"Spawn coords" section, add the coordinates where the vehicle will spawn. 
-3.4.10.1.6 When I take two vehicles at the same time, they spawn on top of each other. 
-What can I do? 
-This is due to the JobsCreator not having a built-in check to verify if a vehicle already 
-exists at the spawn location. 
-3.4.11.1 Selling 
-3.4.11.1.1 How can I set how much percentage the employee gets and how much goes to 
-society? 
-Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. Look for 
-the "Employee percentage" section, where you can set the percentage for the 
-employee. The remainder will go to the society fund. 
-3.4.11.1.2 How can I enable the option to remove all items at once? 
-Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. Look for 
-the "Sell at Once" section and check the box to remove all items at once. 
-3.4.11.1.3 How can I assign a custom scenario/animation for selling? 
-Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. The 
-steps are the same as for collecting: look for the "Animation" section, where you can 
-select a scenario/animation type. 
-38 
-3.4.12.1 Shops 
-3.4.12.1.1 How can I set up a global shop? 
-This is not possible. All shop points are job-bound and cannot be used by players 
-without that specific job. 
-3.4.12.1.2 How can I set a minimum grade requirement to open the shop? 
-Go to the "Shops" tab, click "Add shop" or edit an existing shop. Look for the "Grade" 
-section, where you can set a minimum grade required to open the shop. 
-3.4.12.1.3 Can I set up different items to be visible depending on the grade? 
-No, you can only set a minimum grade to open the shop, but it does not allow for 
-visibility of different items based on the grade. 
-3.4.13.1 Stashes 
-3.4.13.1.1 How can I set up a global stash? 
-Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Global" 
-section and check the box to make it global. 
-3.4.13.1.2 How can I set a minimum grade requirement to open the stash? 
-Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Grade" 
-section, where you can set a minimum grade to open the stash. 
-3.4.13.1.3 Can I set up different items to be visible depending on the grade? 
-No, you can only set a minimum grade to open the stash, but it does not allow for 
-different items to be shown based on the grade. 
-3.4.13.1.4 Can I make the stash shared or not? 
-Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the 
-"Shared" section and check the box to make the stash shared. If unchecked, the stash 
-will be private for each player. 
-3.4.13.1.5 Can I set how many slots a stash has? 
-Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Slots" 
-section and adjust the number of slots for the stash. 
-39 
-3.4.13.1.6 Can I set a maximum weight for a stash? 
-Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Max 
-weight" section and set the maximum weight for the stash. 
-3.4.14.1 Teleports 
-3.4.14.1.1 Can I set up a global teleport? 
-No, teleports are job-bound and not global. 
-3.4.14.1.2 Can I disable the animation that plays when I use a teleport? 
-Yes, go to the "Teleports" tab and look for the "Disable animation" section, check this 
-box to disable the animation. 
-3.4.14.1.3 How can I set up a teleport? 
-Go to the "Teleports" tab and at the bottom, you can set a "from point" for the 
-interaction coordinates (for the target or 3D prompt) and the coordinates where you will 
-teleport. Similarly, set the "to" coordinates and the interaction coordinates for where 
-you want to teleport. 
-3.4.14.1.4 How can I set a minimum grade to teleport? 
-Go to the "Teleports" tab and look for the "Grade" section, here you can set a job grade 
-required to teleport. 
+3.4.1.1.1 Can I adjust the interaction radius in JobsCreator?
+Yes, go to the settings in your JobsCreator and adjust the "Interact Distance" setting.
+
+3.4.1.1.2 Can I change the handcuff or zip tie item to a different one in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Handcuff items" section, you can change the item.
+
+3.4.1.1.3 Can I choose not to use a handcuff item in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Handcuff items" section, you can enable or disable the use of handcuff items.
+
+3.4.1.1.4 Can I disable the handcuff skill check in JobsCreator?
+Yes, go to the settings in your JobsCreator, and under the "Handcuff items" section, you will find the "Handcuffs Skill Check" option. You can uncheck it to disable the skill check.
+
+3.4.1.1.5 Why can’t I run when someone is handcuffed in JobsCreator?
+Go to the settings in your JobsCreator and under the "Handcuff items" section, you’ll find the "Sprint while dragging" option. By default, this is turned off. If you want to run while dragging a handcuffed person, enable this option.
+
+3.4.1.1.6 Can I set up Global Player Interactions so everyone can use them in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Global Player Actions" section, you can check which actions should be global for everyone.
+
+3.4.1.1.7 Can I set up Global Vehicle Interactions so everyone can use them in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Global Vehicle Actions" section, you can check which actions should be global for everyone.
+
+3.4.1.1.8 Can I modify the duration of certain actions in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Action Durations" section, you can adjust the duration for some actions (Note: the time is in milliseconds).
+
+3.4.1.1.9 Can I set up a global webhook for administrative purposes in JobsCreator?
+Yes, go to the Webhooks section in your JobsCreator. Here, you can create and configure a webhook that tracks all jobs.
+
+3.4.1.1.10 Can I set up a job-specific webhook for administrative purposes in JobsCreator?
+Yes, go to the Jobs section and click on "Edit." Then, navigate to the "General" tab and, at the bottom, you can add a webhook for that specific job.
+
+3.4.1.1.11 Can I set up global points like a Store or Spawner Zone that everyone has access to regardless of the player job in JobsCreator?
+No, this is not possible. All set-up points are linked to a job in JobsCreator.
+
+3.4.1.1.12 Can I set up an on/off duty point with the JobsCreator?
+No, this is not a feature of the script in JobsCreator.
+
+3.4.2.1 Jobs Grades
+
+3.4.2.1.1 How can I change the salary of a specific job rank in JobsCreator?
+Click the three dots on the right and select "Edit." Here, you can modify the salary for the job rank.
+
+3.4.2.1.2 How can I grant Boss actions to a rank in JobsCreator?
+Click the three dots on the right or during rank creation, check the "Boss Actions Access" box to grant Boss actions to the rank.
+
+3.4.3.1 Actions
+
+3.4.3.1.1 How can I add job-specific player actions in JobsCreator?
+Go to the job and look for the "Actions" section. Here, you can enable or disable the available actions for the job.
+
+3.4.3.1.2 How can I add job-specific vehicle actions in JobsCreator?
+Go to the job and look for the "Actions" section. Here, you can enable or disable the available vehicle actions for the job.
+
+3.4.3.1.3 Can I modify the duration of these specific actions in JobsCreator?
+Yes, go to the settings in your JobsCreator and under the "Action Durations" section, you can adjust the duration for some actions (Note: the time is in milliseconds).
+
+3.4.4.1 Blips
+
+3.4.4.1.1 How can I create a blip that everyone can see in JobsCreator?
+When creating a blip, check the "Global" box to make it visible to everyone.
+
+3.4.4.1.2 Where can I find the values for the Sprite and Color in JobsCreator?
+A helpful website for this is https://docs.fivem.net/docs/game-references/blips/.
+
+3.4.5.1 Boss Menu
+
+3.4.5.1.1 I try to open the boss menu in JobsCreator, but nothing happens. What should I do?
+The JobsCreator itself does not include a boss menu, but it triggers an external boss menu script. Go to Editable.openBossMenu and ensure your boss menu script is installed and correctly configured. If you are using a custom boss menu, add it to the Editable.openBossMenu function.
+
+3.4.6.1 Cloakroom
+
+3.4.6.1.1 I get the warning 'No script for clothing found! Supported: fivem appearance/illenium-appearance/qb-clothing.' What should I do?
+Go to lunar_jobscreator\config\cl_edit and locate the function Editable.openCloakroom. Add your clothing resource here so the cloakroom will function properly.
+
+3.4.7.1 Collecting Zones
+
+3.4.7.1.1 How can I set up that a required item is needed before I can collect in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the "Required Item" section, where you can set the required item.
+
+3.4.7.1.2 Can I set up multiple required items in JobsCreator?
+No, you can only set one required item at a time.
+
+3.4.7.1.3 How can I remove a required item in JobsCreator?
+Simply leave the "Required Item" field empty to prevent requiring an item.
+
+3.4.7.1.4 How can I adjust the duration of the collecting process in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the "Duration" section, where you can adjust the duration in milliseconds.
+
+3.4.7.1.5 How can I set a Max Collectable limit in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Find the "Max Collectable" section and enter the maximum value you want.
+
+3.4.7.1.6 How can I adjust the recovery time between collections in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the "Recovery Time" section, where you can set the time (in milliseconds) until a collecting point can be used again.
+
+3.4.7.1.7 How can I set it up to get a different amount of items each time in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the second section named "Items" and adjust the "Min" and "Max" count for the items.
+
+3.4.7.1.8 How can I assign a custom scenario/animation for collecting in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the "Animation" section, where you can select a scenario/animation type.
+3.4.7.1 Collecting Zones
+
+3.4.7.1.9 How can I set up a location for collecting in JobsCreator?
+Go to the "Collecting" tab, click "Add collecting point," or edit an existing collecting zone. Look for the "Locations" section, where you can add the vec3 coordinates for the collecting point.
+
+3.4.8.1 Spawner Zones
+
+3.4.8.1.1 How can I set up that a required item is needed before I can collect in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Required Item" section, where you can set the required item.
+
+3.4.8.1.2 Can I set up multiple required items in JobsCreator?
+No, you can only set one required item at a time.
+
+3.4.8.1.3 How can I remove a required item in JobsCreator?
+Simply leave the "Required Item" field empty to prevent requiring an item.
+
+3.4.8.1.4 How can I adjust the duration of the collecting process in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Duration" section, where you can adjust the duration in milliseconds.
+
+3.4.8.1.6 How can I adjust the recovery time between spawns in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Recovery Time" section, where you can set the time (in milliseconds) until a spawner zone can be used again.
+
+3.4.8.1.7 How can I set it up to get a different amount of items each time in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the second section named "Items" and adjust the "Min" and "Max" count for the items.
+
+3.4.8.1.8 How can I assign a custom scenario/animation for collecting in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Animation" section, where you can select a scenario/animation type.
+
+3.4.8.1.9 How can I set up a location for collecting in JobsCreator?
+Go to the "Spawner" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Locations" section, where you can add the vec3 coordinates for the spawner point.
+
+3.4.8.1.10 How can I adjust the radius of the spawn zone in JobsCreator?
+Go to the "Spawner zone" tab, click "Add spawner zone," or edit an existing spawner zone. Look for the "Locations" section, where you can change the radius in meters.
+
+3.4.9.1 Crafting
+
+3.4.9.1.1 Can I connect a crafting table to a minimum job grade in JobsCreator?
+Yes, go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look for the "Basic" section and then the "Grade" setting, where you can define a minimum grade requirement.
+
+3.4.9.1.2 How can I configure recipes for crafting in JobsCreator?
+Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look for the "Recipes" section and click on the first action on the right. Here, you can configure the requirements for creating the set blueprint and define which item you will get in return after crafting.
+
+3.4.9.1.3 How can I set up a location for crafting in JobsCreator?
+Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look for the "Locations" section, where you can add the vec3 coordinates for the crafting point.
+
+3.4.9.1.4 How can I assign a custom scenario/animation for crafting in JobsCreator?
+Go to the "Crafting" tab, click "Add crafting point," or edit an existing crafting zone. Look for the "Animation" section, where you can select a scenario/animation type.
+
+3.4.10.1 Garages
+
+3.4.10.1.1 How can I change the vehicle type for a garage in JobsCreator?
+Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the "Vehicle type" section, where you can set the type, such as "Air" or "Car."
+
+3.4.10.1.2 How can I make a garage shared in JobsCreator?
+Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the "Shared" section and check the box to make the vehicles shared between employees.
+
+3.4.10.1.3 I want to use the spawn name, but the vehicle doesn't spawn in JobsCreator. What should I do?
+This issue occurs because you should not use the vehicle's name; instead, use the vehicle's hash.
+
+3.4.10.1 Garages
+
+3.4.10.1.4 How can I make a vehicle spawn with specific customizations in JobsCreator?
+Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the "Vehicles" section, and on the right side, select the first option. Here, you can add vehicle customizations.
+
+3.4.10.1.5 How can I set up a new garage in JobsCreator?
+Go to the "Garage" tab, click "Add garage" or edit an existing garage. Look for the "Locations" section and enter where you want the garage to be accessible. In the "Spawn coords" section, add the coordinates where the vehicle will spawn.
+
+3.4.10.1.6 When I take two vehicles at the same time, they spawn on top of each other. What can I do?
+This is due to the JobsCreator not having a built-in check to verify if a vehicle already exists at the spawn location. You may need to implement a custom check to ensure no two vehicles spawn in the same location.
+
+3.4.11.1 Selling
+
+3.4.11.1.1 How can I set how much percentage the employee gets and how much goes to society in JobsCreator?
+Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. Look for the "Employee percentage" section, where you can set the percentage for the employee. The remainder will go to the society fund.
+
+3.4.11.1.2 How can I enable the option to remove all items at once in JobsCreator?
+Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. Look for the "Sell at Once" section and check the box to remove all items at once.
+
+3.4.11.1.3 How can I assign a custom scenario/animation for selling in JobsCreator?
+Go to the "Selling" tab, click "Add selling point" or edit an existing selling point. The steps are the same as for collecting: look for the "Animation" section, where you can select a scenario/animation type.
+
+3.4.12.1 Shops
+
+3.4.12.1.1 How can I set up a global shop in JobsCreator?
+This is not possible. All shop points are job-bound and cannot be used by players without that specific job.
+
+3.4.12.1.2 How can I set a minimum grade requirement to open the shop in JobsCreator?
+Go to the "Shops" tab, click "Add shop" or edit an existing shop. Look for the "Grade" section, where you can set a minimum grade required to open the shop.
+
+3.4.12.1.3 Can I set up different items to be visible depending on the grade in JobsCreator?
+No, you can only set a minimum grade to open the shop, but it does not allow for visibility of different items based on the grade.
+
+3.4.13.1 Stashes
+
+3.4.13.1.1 How can I set up a global stash in JobsCreator?
+Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Global" section and check the box to make it global.
+
+3.4.13.1.2 How can I set a minimum grade requirement to open the stash in JobsCreator?
+Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Grade" section, where you can set a minimum grade to open the stash.
+
+3.4.13.1.3 Can I set up different items to be visible depending on the grade in JobsCreator?
+No, you can only set a minimum grade to open the stash, but it does not allow for different items to be shown based on the grade.
+
+3.4.13.1.4 Can I make the stash shared or not in JobsCreator?
+Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Shared" section and check the box to make the stash shared. If unchecked, the stash will be private for each player.
+
+3.4.13.1.5 Can I set how many slots a stash has in JobsCreator?
+Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Slots" section and adjust the number of slots for the stash.
+
+3.4.13.1.6 Can I set a maximum weight for a stash in JobsCreator?
+Go to the "Stashes" tab, click "Add stash" or edit an existing stash. Look for the "Max weight" section and set the maximum weight for the stash.
+
+3.4.14.1 Teleports
+
+3.4.14.1.1 Can I set up a global teleport in JobsCreator?
+No, teleports are job-bound and not global.
+
+3.4.14.1.2 Can I disable the animation that plays when I use a teleport in JobsCreator?
+Yes, go to the "Teleports" tab and look for the "Disable animation" section, check this box to disable the animation.
+
+3.4.14.1.3 How can I set up a teleport in JobsCreator?
+Go to the "Teleports" tab and at the bottom, you can set a "from point" for the interaction coordinates (for the target or 3D prompt) and the coordinates where you will teleport. Similarly, set the "to" coordinates and the interaction coordinates for where you want to teleport.
+
+3.4.14.1.4 How can I set a minimum grade to teleport in JobsCreator?
+Go to the "Teleports" tab and look for the "Grade" section, here you can set a job grade required to teleport.
