@@ -605,3 +605,8 @@ Go to the "Teleports" tab and at the bottom, you can set a "from point" for the 
 
 3.4.14.1.4 How can I set a minimum grade to teleport in JobsCreator?
 Go to the "Teleports" tab and look for the "Grade" section, here you can set a job grade required to teleport.
+4. Drugscreator
+4.1 General config drugscreator
+4.1.1 When entering or exiting a lab using Drugscreator, you might see a second prompt asking if you want to leave the lab. 
+This happens because there's a default teleport location defined in either qb-smallresources or qbx-smallresources that overlaps with the teleport used by drugscreator.
+To fix this, simply go to the configuration file of the smallresources script and remove the extra teleport. This will stop the second prompt from appearing.
